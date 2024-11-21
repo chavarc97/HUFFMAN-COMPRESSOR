@@ -13,6 +13,8 @@ FILE *file;
 // Function prototypes
 map *create_freq_map(char *file);
 void print_freq_map(map *freq_m);
+PriorityQueue *create_priority_queue_from_map(map *freq_m);
+void print_priority_queue(PriorityQueue *pq);
 // ****************************************************************************************************
 
 int main(int argc, char const *argv[])
@@ -100,5 +102,52 @@ void print_freq_map(map *freq_m)
                 n = n->next;
             }
         }
+    }
+}
+PriorityQueue *create_priority_queue_from_map(map *freq_m)
+{
+    /*Crea una cola de prioridad vacía*/
+    PriorityQueue *pq = pq_create();
+    /*Agrega cada elemento en la cola de prioridad*/
+    for (int i = 0; i < BUCKET_SIZE; i++)
+    {
+        node *n = freq_m->hashTable[i];
+        /*Envia cada valor del mapa a pq_push para ser ordenado*/
+        while (n != NULL)
+        {
+            char *char_key = n->key;
+            int *value = n->value;
+            pq_push(pq, char_key, *value);
+            n = n->next;
+        }
+    }
+    /*Regresa la cola ya ordenada*/
+    return pq;
+}
+/*vasado en 'print_freq_map'*/
+void print_priority_queue(PriorityQueue *pq)
+{
+    /*Si la cola no esta vacia continua verificando con el bucle*/
+    while (!pq_is_empty(pq))
+    {
+        /*Guarda la frecuencia y el caracter(contando linea nueva y espacios)*/
+        char c = *(char *)pq->front->data;
+        int freq = pq->front->priority;
+        /*Verifica que tipo de caracter esta usando y lo imprime, 
+        luego se llama a pq_pop que lo elimina de la lista*/
+        if (c == ' ')
+        {
+            printf("  ' ': %d\n", freq);
+        }
+        else if (c == '\n')
+        {
+            printf("  'NEWLINE': %d\n", freq);
+        }
+        else
+        {
+            printf("  '%c': %d\n", c, freq);
+        }
+        /*elimnina el valor de la lista que ya fue impreso*/
+        pq_pop(pq);
     }
 }
