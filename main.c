@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "hashmap/map.c"
+#include "ColaDePrioridad/priority.c"
 
 // ****************************************************************************************************
 // defines
