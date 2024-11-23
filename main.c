@@ -5,10 +5,10 @@
 #include "ColaDePrioridad/priority.c"
 
 // ****************************************************************************************************
-// defines
+// Defines
 #define BUCKET_SIZE 10
 
-// global variables
+// Global variables
 FILE *file;
 
 // Function prototypes
@@ -16,19 +16,24 @@ map *create_freq_map(char *file);
 void print_freq_map(map *freq_m);
 PriorityQueue *create_priority_queue_from_map(map *freq_m);
 void print_priority_queue(PriorityQueue *pq);
+
 // ****************************************************************************************************
 
 int main(int argc, char const *argv[])
 {
-
-    // create a frequency map of the characters in the file
+    // Crear un mapa de frecuencias
     map *freq_m = create_freq_map("test.txt");
 
-    // print the frequency map
     if (freq_m != NULL)
     {
-        // print the frequency map
+        printf("Mapa de frecuencias:\n");
         print_freq_map(freq_m);
+
+        // Crear una cola de prioridad con el mapa de frecuencias
+        PriorityQueue *pq = create_priority_queue_from_map(freq_m);
+
+        printf("\nFrequencias en orden ascendente:\n");
+        print_priority_queue(pq);
     }
 
     return 0;
@@ -43,31 +48,26 @@ map *create_freq_map(char *filename)
     FILE *file = fopen(filename, "r");
     if (file == NULL)
     {
-        perror("Error opening file");
+        perror("Error al abrir el archivo");
         return NULL;
     }
 
     map *freq_m = map_create(BUCKET_SIZE, char_hash, char_equals);
 
-    // iterate over the file and count the frequency of each character
+    // Contar frecuencias en el archivo
     int c;
     while ((c = fgetc(file)) != EOF) {
         if (c >= 0 && c <= 127) {
-            // Create temporary key with current character
             char temp_char = (char)c;
-            
-            // Try to get existing frequency using temp_char
             int *freq = (int *)map_get(freq_m, &temp_char);
 
             if (freq == NULL) {
-                // Character not found - create new entry
                 char *char_key = malloc(sizeof(char));
                 *char_key = temp_char;
                 freq = malloc(sizeof(int));
                 *freq = 1;
                 map_put(freq_m, char_key, freq);
             } else {
-                // Character found - just increment frequency
                 (*freq)++;
             }
         }
@@ -78,33 +78,30 @@ map *create_freq_map(char *filename)
 
 void print_freq_map(map *freq_m)
 {
-    printf("Character Frequencies:\n");
     for (int i = 0; i < BUCKET_SIZE; i++)
     {
         node *n = freq_m->hashTable[i];
-        if (n != NULL)
+        while (n != NULL)
         {
-            while (n != NULL)
+            char c = *(char *)n->key;
+            int freq = *(int *)n->value;
+            if (c == ' ')
             {
-                char c = *(char *)n->key;
-                int freq = *(int *)n->value;
-                if (c == ' ')
-                {
-                    printf("  ' ': %d\n", freq);
-                }
-                else if (c == '\n')
-                {
-                    printf("  'NEWLINE': %d\n", freq);
-                }
-                else
-                {
-                    printf("  '%c': %d\n", c, freq);
-                }
-                n = n->next;
+                printf("  ' ': %d\n", freq);
             }
+            else if (c == '\n')
+            {
+                printf("  'NEWLINE': %d\n", freq);
+            }
+            else
+            {
+                printf("  '%c': %d\n", c, freq);
+            }
+            n = n->next;
         }
     }
 }
+
 PriorityQueue *create_priority_queue_from_map(map *freq_m)
 {
     /*Crea una cola de prioridad vacía*/
@@ -128,12 +125,13 @@ PriorityQueue *create_priority_queue_from_map(map *freq_m)
 /*vasado en 'print_freq_map'*/
 void print_priority_queue(PriorityQueue *pq)
 {
+    PQNode *temp = pq->front;
     /*Si la cola no esta vacia continua verificando con el bucle*/
-    while (!pq_is_empty(pq))
+    while (temp != NULL)
     {
         /*Guarda la frecuencia y el caracter(contando linea nueva y espacios)*/
-        char c = *(char *)pq->front->data;
-        int freq = pq->front->priority;
+        char c = *(char *)temp->data;
+        int freq = temp->priority;
         /*Verifica que tipo de caracter esta usando y lo imprime, 
         luego se llama a pq_pop que lo elimina de la lista*/
         if (c == ' ')
@@ -148,7 +146,7 @@ void print_priority_queue(PriorityQueue *pq)
         {
             printf("  '%c': %d\n", c, freq);
         }
-        /*elimnina el valor de la lista que ya fue impreso*/
-        pq_pop(pq);
+        /*mueve al siguiente valor*/
+        temp = temp->next;
     }
 }
