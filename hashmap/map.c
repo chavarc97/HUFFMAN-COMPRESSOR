@@ -2,19 +2,7 @@
   #include <stdlib.h>
   #include <stdio.h>
   
-  struct node_str {
-    void * key, * value;
-    struct node_str * next;
-  };
-  
-  typedef struct node_str node;
-  
-  typedef struct map_str {
-    hash_func hash;
-    equals_func key_equals;
-    int M, size;
-    node ** hashTable;
-  } map_str;
+ 
   
   /* Crea la memoria del arreglo subyacente con el numero
      de buckets determiando (M), guarda la hash function
