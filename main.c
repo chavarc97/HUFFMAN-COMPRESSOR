@@ -20,6 +20,7 @@ void print_freq_map(map *freq_m);
 PriorityQueue *create_priority_queue_from_map(map *freq_m);
 void print_priority_queue(PriorityQueue *pq);
 void print_freq_map_binary(map *freq_m);
+void print_asterisks();
 // ****************************************************************************************************
 
 int main(int argc, char const *argv[])
@@ -42,23 +43,26 @@ int main(int argc, char const *argv[])
 
     if (freq_m != NULL)
     {
-        printf(RED "\n************************************");
-        printf("\n*%9sMAPA DE FRECUENCIAS%7s", "", "*");
-        printf("\n************************************\n" RESET);
+        print_asterisks(); // Print a line of asterisks
+        printf(RED "*%30sMAPA DE FRECUENCIAS%34s", "", "*" RESET);
+        print_asterisks(); // Print a line of asterisks
+        printf("\n");
 
         print_freq_map(freq_m);
 
         // Crear una cola de prioridad con el mapa de frecuencias
         PriorityQueue *pq = create_priority_queue_from_map(freq_m);
-        printf(RED "\n************************************");
-        printf("\n*%2sFRECUENCIAS EN ORDEN ASCENDENTE%2s", "", "*");
-        printf("\n************************************\n" RESET);
+        print_asterisks(); // Print a line of asterisks
+        printf(RED "*%22sFRECUENCIAS EN ORDEN ASCENDENTE%26s", "", "*");
+        print_asterisks(); // Print a line of asterisks
+        printf("\n");
         print_priority_queue(pq);
 
         // Create Huffman tree from priority queue
-        printf(RED "\n************************************");
-        printf("\n*%9sHUFFMAN TREE BUILD%8s", "", "*");
-        printf("\n************************************\n" RESET);
+        print_asterisks(); // Print a line of asterisks
+        printf(RED "*%30sHUFFMAN TREE BUILD%35s", "", "*" RESET);
+        print_asterisks(); // Print a line of asterisks
+        printf("\n");
         HuffmanTree *huffman_tree = huffman_create_tree(pq);
 
         if (huffman_tree != NULL)
@@ -67,9 +71,10 @@ int main(int argc, char const *argv[])
             huffman_print_codes(huffman_tree);
 
             map *dict = create_code_map(huffman_tree);
-            printf(RED "\n************************************");
-            printf("\n*%9sCODES DICTIONARY%10s", "", "*");
-            printf("\n************************************\n" RESET);
+            print_asterisks(); // Print a line of asterisks
+            printf(RED "*%29sCODES TO DICTIONARY%35s", "", "*" RESET);
+            print_asterisks(); // Print a line of asterisks
+            printf("\n");
             print_freq_map_binary(dict);
             huffman_destroy_tree(huffman_tree);
         }
@@ -224,4 +229,14 @@ void print_priority_queue(PriorityQueue *pq)
         /*mueve al siguiente valor*/
         temp = temp->next;
     }
+}
+
+void print_asterisks()
+{
+    printf(RED "\n");
+    for (int i = 0; i < 80; i++)
+    {
+        printf("*");
+    }
+    printf("\n" RESET);
 }
