@@ -49,7 +49,7 @@
     /* obtener el bucket donde insertar */
     int bucket = m->hash(key) % m->M;
     node * n = m->hashTable[bucket];
-    printf("map_put:start, looking in bucket %d\n", bucket);
+    //printf("map_put:start, looking in bucket %d\n", bucket);
   
     /* recorre la lista ligada */
     while(n != NULL && n->next != NULL) 
@@ -59,14 +59,14 @@
       if(m->key_equals(n->key, key))
       { 
         /* actualiza el valor (sobreescribe) */
-        printf("map_put:Found, update!\n");
+       //printf("map_put:Found, update!\n");
         n->value = value;
         return;
       }
       else
       {
         /* no es igual? buscar adelante */
-        printf("map_put:Not here, keep searching\n");
+        //printf("map_put:Not here, keep searching\n");
         n = n->next;
       }
     }
@@ -78,13 +78,13 @@
     if(m->hashTable[bucket] == NULL) 
     {
       /* case: the bucket is empty */
-      printf("map_put:Creating first node at bucket %d\n", bucket);
+      //printf("map_put:Creating first node at bucket %d\n", bucket);
       m->hashTable[bucket] = createNode(key, value);
       m->size ++;
     } 
     else 
     {
-      printf("map_put:key not found create new node\n");
+      //printf("map_put:key not found create new node\n");
       node * new = createNode(key, value);
       n->next = new;
       m->size ++;
