@@ -176,3 +176,49 @@ void huffman_destroy_tree(HuffmanTree *tree)
     destroy_node_recursive(tree->root);
     free(tree);
 }
+
+// Create a dictionary from the Huffman tree
+void create_map_recursive(HuffmanNode *node, char *code, int depth, map *code_map)
+{
+    if (node == NULL)
+        return;
+
+    // If this is a leaf node, insert the character and its code into the map
+    if (node->left == NULL && node->right == NULL)
+    {
+        code[depth] = '\0';
+        char *char_key = malloc(sizeof(char));
+        *char_key = node->character;
+        char *code_value = malloc(strlen(code) + 1);
+        strcpy(code_value, code);
+        map_put(code_map, char_key, code_value);
+        return;
+    }
+
+    // Traverse left
+    if (node->left)
+    {
+        code[depth] = '0';
+        create_map_recursive(node->left, code, depth + 1, code_map);
+    }
+
+    // Traverse right
+    if (node->right)
+    {
+        code[depth] = '1';
+        create_map_recursive(node->right, code, depth + 1, code_map);
+    }
+}
+
+map* create_code_map(HuffmanTree *tree)
+{
+    if (tree == NULL || tree->root == NULL)
+    {
+        return NULL;
+    }
+
+    map *code_map = map_create(BUCKET_SIZE, char_hash, char_equals);
+    char code[100]; // Buffer to store codes
+    create_map_recursive(tree->root, code, 0, code_map);
+    return code_map;
+}

@@ -2,6 +2,7 @@
 #define HUFFMAN_TREE_H
 
 #include "../ColaDePrioridad/priority.h"
+#include "../hashmap/map.h"
 
 // Structure for Huffman Tree Node
 typedef struct HuffmanNode {
@@ -20,5 +21,8 @@ typedef struct HuffmanTree {
 HuffmanTree *huffman_create_tree(PriorityQueue *pq);
 void huffman_print_codes(HuffmanTree *tree);
 void huffman_destroy_tree(HuffmanTree *tree);
+void create_map_recursive(HuffmanNode *node, char *code, int depth, map *code_map);
+map *create_code_map(HuffmanTree *tree);
+
 
 #endif

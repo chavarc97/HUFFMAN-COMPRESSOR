@@ -17,7 +17,7 @@ map *create_freq_map(char *file);
 void print_freq_map(map *freq_m);
 PriorityQueue *create_priority_queue_from_map(map *freq_m);
 void print_priority_queue(PriorityQueue *pq);
-
+void print_freq_map_binary(map *freq_m);
 // ****************************************************************************************************
 
 int main(int argc, char const *argv[])
@@ -42,7 +42,15 @@ int main(int argc, char const *argv[])
         if (huffman_tree != NULL)
         {
             printf("\nCodigos Huffman:\n");
+            // Construct a dictionary from the Huffman tree codes and print it
+            printf("\n************************************");
+            printf("\nHuffman print:\n");
             huffman_print_codes(huffman_tree);
+
+            map *dict = create_code_map(huffman_tree);
+            printf("\n************************************");
+            printf("\nCodes Dictionary:\n");
+            print_freq_map_binary(dict);
             huffman_destroy_tree(huffman_tree);
         }
         else
@@ -107,7 +115,7 @@ void print_freq_map(map *freq_m)
             int freq = *(int *)n->value;
             if (c == ' ')
             {
-                printf("  ' ': %d\n", freq);
+                printf("  'SPACE': %d\n", freq);
             }
             else if (c == '\n')
             {
@@ -116,6 +124,32 @@ void print_freq_map(map *freq_m)
             else
             {
                 printf("  '%c': %d\n", c, freq);
+            }
+            n = n->next;
+        }
+    }
+}
+
+void print_freq_map_binary(map *freq_m)
+{
+    for (int i = 0; i < BUCKET_SIZE; i++)
+    {
+        node *n = freq_m->hashTable[i];
+        while (n != NULL)
+        {
+            char c = *(char *)n->key;
+            char *code = (char *)n->value;
+            if (c == ' ')
+            {
+                printf("  'SPACE': %s\n", code);
+            }
+            else if (c == '\n')
+            {
+                printf("  'NEWLINE': %s\n", code);
+            }
+            else
+            {
+                printf("  '%c': %s\n", c, code);
             }
             n = n->next;
         }
