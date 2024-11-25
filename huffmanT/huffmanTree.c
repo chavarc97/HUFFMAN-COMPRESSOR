@@ -114,15 +114,15 @@ void print_codes_recursive(HuffmanNode *node, char *code, int depth)
         code[depth] = '\0';
         if (node->character == ' ')
         {
-            printf("SPACE: %s\n", code);
+            printf("  SPACE: %6s\n", code);
         }
         else if (node->character == '\n')
         {
-            printf("NEWLINE: %s\n", code);
+            printf("  NEWLINE: %6s\n", code);
         }
         else
         {
-            printf("'%c': %s\n", node->character, code);
+            printf("  '%c': %10s\n", node->character, code);
         }
         return;
     }

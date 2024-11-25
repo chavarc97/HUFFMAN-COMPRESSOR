@@ -8,7 +8,9 @@
 // ****************************************************************************************************
 // Defines
 #define BUCKET_SIZE 10
-
+#define YELLOW "\033[1;33m"
+#define RED "\033[1;31m"
+#define RESET "\033[0m"
 // Global variables
 FILE *file;
 
@@ -22,34 +24,52 @@ void print_freq_map_binary(map *freq_m);
 
 int main(int argc, char const *argv[])
 {
+    printf("\n");
+    printf(YELLOW "██╗  ██╗██╗   ██╗███████╗███████╗███╗   ███╗ █████╗ ███╗   ██╗\n\
+██║  ██║██║   ██║██╔════╝██╔════╝████╗ ████║██╔══██╗████╗  ██║\n\
+███████║██║   ██║█████╗  █████╗  ██╔████╔██║███████║██╔██╗ ██║\n\
+██╔══██║██║   ██║██╔══╝  ██╔══╝  ██║╚██╔╝██║██╔══██║██║╚██╗██║\n\
+██║  ██║╚██████╔╝██║     ██║     ██║ ╚═╝ ██║██║  ██║██║ ╚████║\n\
+╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝\n\
+██████╗ ██████╗ ██████╗ ██╗███╗   ██╗ ██████╗\n\
+██╔════╝██╔═══██╗██╔══██╗██║████╗  ██║██╔════╝\n\
+██║     ██║   ██║██║  ██║██║██╔██╗ ██║██║  ███╗\n\
+██║     ██║   ██║██║  ██║██║██║╚██╗██║██║   ██║\n\
+╚██████╗╚██████╔╝██████╔╝██║██║ ╚████║╚██████╔╝\n\
+╚═════╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝ \n\n" RESET);
     // Crear un mapa de frecuencias
     map *freq_m = create_freq_map("test.txt");
 
     if (freq_m != NULL)
     {
-        printf("Mapa de frecuencias:\n");
+        printf(RED "\n************************************");
+        printf("\n*%9sMAPA DE FRECUENCIAS%7s", "", "*");
+        printf("\n************************************\n" RESET);
+
         print_freq_map(freq_m);
 
         // Crear una cola de prioridad con el mapa de frecuencias
         PriorityQueue *pq = create_priority_queue_from_map(freq_m);
-
-        printf("\nFrequencias en orden ascendente:\n");
+        printf(RED "\n************************************");
+        printf("\n*%2sFRECUENCIAS EN ORDEN ASCENDENTE%2s", "", "*");
+        printf("\n************************************\n" RESET);
         print_priority_queue(pq);
 
         // Create Huffman tree from priority queue
+        printf(RED "\n************************************");
+        printf("\n*%9sHUFFMAN TREE BUILD%8s", "", "*");
+        printf("\n************************************\n" RESET);
         HuffmanTree *huffman_tree = huffman_create_tree(pq);
 
         if (huffman_tree != NULL)
         {
-            printf("\nCodigos Huffman:\n");
             // Construct a dictionary from the Huffman tree codes and print it
-            printf("\n************************************");
-            printf("\nHuffman print:\n");
             huffman_print_codes(huffman_tree);
 
             map *dict = create_code_map(huffman_tree);
-            printf("\n************************************");
-            printf("\nCodes Dictionary:\n");
+            printf(RED "\n************************************");
+            printf("\n*%9sCODES DICTIONARY%10s", "", "*");
+            printf("\n************************************\n" RESET);
             print_freq_map_binary(dict);
             huffman_destroy_tree(huffman_tree);
         }
@@ -115,15 +135,15 @@ void print_freq_map(map *freq_m)
             int freq = *(int *)n->value;
             if (c == ' ')
             {
-                printf("  'SPACE': %d\n", freq);
+                printf("  'SPACE': %6d\n", freq);
             }
             else if (c == '\n')
             {
-                printf("  'NEWLINE': %d\n", freq);
+                printf("  'NEWLINE': %6d\n", freq);
             }
             else
             {
-                printf("  '%c': %d\n", c, freq);
+                printf("  '%c': %10d\n", c, freq);
             }
             n = n->next;
         }
@@ -141,15 +161,15 @@ void print_freq_map_binary(map *freq_m)
             char *code = (char *)n->value;
             if (c == ' ')
             {
-                printf("  'SPACE': %s\n", code);
+                printf("  'SPACE': %6s\n", code);
             }
             else if (c == '\n')
             {
-                printf("  'NEWLINE': %s\n", code);
+                printf("  'NEWLINE': %6s\n", code);
             }
             else
             {
-                printf("  '%c': %s\n", c, code);
+                printf("  '%c': %10s\n", c, code);
             }
             n = n->next;
         }
@@ -159,7 +179,7 @@ void print_freq_map_binary(map *freq_m)
 PriorityQueue *create_priority_queue_from_map(map *freq_m)
 {
     PriorityQueue *pq = pq_create();
-    
+
     for (int i = 0; i < BUCKET_SIZE; i++)
     {
         node *n = freq_m->hashTable[i];
@@ -167,11 +187,11 @@ PriorityQueue *create_priority_queue_from_map(map *freq_m)
         {
             // Allocate new memory for the character
             char *char_key = malloc(sizeof(char));
-            *char_key = *(char*)n->key;
-            
+            *char_key = *(char *)n->key;
+
             // Push to priority queue
-            pq_push(pq, char_key, *(int*)n->value);
-            
+            pq_push(pq, char_key, *(int *)n->value);
+
             n = n->next;
         }
     }
@@ -191,15 +211,15 @@ void print_priority_queue(PriorityQueue *pq)
         luego se llama a pq_pop que lo elimina de la lista*/
         if (c == ' ')
         {
-            printf("  ' ': %d\n", freq);
+            printf("  'SPACE': %6d\n", freq);
         }
         else if (c == '\n')
         {
-            printf("  'NEWLINE': %d\n", freq);
+            printf("  'NEWLINE': %6d\n", freq);
         }
         else
         {
-            printf("  '%c': %d\n", c, freq);
+            printf("  '%c': %10d\n", c, freq);
         }
         /*mueve al siguiente valor*/
         temp = temp->next;
