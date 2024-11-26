@@ -84,12 +84,15 @@ int main(int argc, char const *argv[])
             char *encoded_text = encode_file_with_huffman(dict, "test.txt");
             if (encoded_text != NULL)
             {
-                printf("\nTexto codificado del archivo:\n%s\n", encoded_text);
+                print_asterisks();
+                printf(RED "*%29sEncode%35s", "", "*" RESET);
+                print_asterisks();
+                printf("%s\n", encoded_text);
                 free(encoded_text); // Liberar memoria del texto codificado
             }
             else
             {
-                printf(RED "*%29sEncode%35s", "", "*" RESET);
+                printf("Error");
             }
 
             huffman_destroy_tree(huffman_tree);
