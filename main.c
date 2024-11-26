@@ -4,6 +4,7 @@
 #include "hashmap/map.c"
 #include "ColaDePrioridad/priority.c"
 #include "huffmanT/huffmanTree.c"
+#include "Encode/Encoding.c"
 
 // ****************************************************************************************************
 // Defines
@@ -11,6 +12,19 @@
 #define YELLOW "\033[1;33m"
 #define RED "\033[1;31m"
 #define RESET "\033[0m"
+#define Header "\
+██╗  ██╗██╗   ██╗███████╗███████╗███╗   ███╗ █████╗ ███╗   ██╗\n\
+██║  ██║██║   ██║██╔════╝██╔════╝████╗ ████║██╔══██╗████╗  ██║\n\
+███████║██║   ██║█████╗  █████╗  ██╔████╔██║███████║██╔██╗ ██║\n\
+██╔══██║██║   ██║██╔══╝  ██╔══╝  ██║╚██╔╝██║██╔══██║██║╚██╗██║\n\
+██║  ██║╚██████╔╝██║     ██║     ██║ ╚═╝ ██║██║  ██║██║ ╚████║\n\
+╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝\n\
+██████╗ ██████╗ ██████╗ ██╗███╗   ██╗ ██████╗\n\
+██╔════╝██╔═══██╗██╔══██╗██║████╗  ██║██╔════╝\n\
+██║     ██║   ██║██║  ██║██║██╔██╗ ██║██║  ███╗\n\
+██║     ██║   ██║██║  ██║██║██║╚██╗██║██║   ██║\n\
+╚██████╗╚██████╔╝██████╔╝██║██║ ╚████║╚██████╔╝\n\
+╚═════╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝ \n\n" // lo pase para aca por q me estesaba un poco lo grande que estaba la funcion
 // Global variables
 FILE *file;
 
@@ -26,18 +40,7 @@ void print_asterisks();
 int main(int argc, char const *argv[])
 {
     printf("\n");
-    printf(YELLOW "██╗  ██╗██╗   ██╗███████╗███████╗███╗   ███╗ █████╗ ███╗   ██╗\n\
-██║  ██║██║   ██║██╔════╝██╔════╝████╗ ████║██╔══██╗████╗  ██║\n\
-███████║██║   ██║█████╗  █████╗  ██╔████╔██║███████║██╔██╗ ██║\n\
-██╔══██║██║   ██║██╔══╝  ██╔══╝  ██║╚██╔╝██║██╔══██║██║╚██╗██║\n\
-██║  ██║╚██████╔╝██║     ██║     ██║ ╚═╝ ██║██║  ██║██║ ╚████║\n\
-╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝\n\
-██████╗ ██████╗ ██████╗ ██╗███╗   ██╗ ██████╗\n\
-██╔════╝██╔═══██╗██╔══██╗██║████╗  ██║██╔════╝\n\
-██║     ██║   ██║██║  ██║██║██╔██╗ ██║██║  ███╗\n\
-██║     ██║   ██║██║  ██║██║██║╚██╗██║██║   ██║\n\
-╚██████╗╚██████╔╝██████╔╝██║██║ ╚████║╚██████╔╝\n\
-╚═════╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝ \n\n" RESET);
+    printf(YELLOW Header RESET);
     // Crear un mapa de frecuencias
     map *freq_m = create_freq_map("test.txt");
 
@@ -76,6 +79,19 @@ int main(int argc, char const *argv[])
             print_asterisks(); // Print a line of asterisks
             printf("\n");
             print_freq_map_binary(dict);
+
+            // Codificar el archivo usando el mapa de códigos
+            char *encoded_text = encode_file_with_huffman(dict, "test.txt");
+            if (encoded_text != NULL)
+            {
+                printf("\nTexto codificado del archivo:\n%s\n", encoded_text);
+                free(encoded_text); // Liberar memoria del texto codificado
+            }
+            else
+            {
+                printf(RED "*%29sEncode%35s", "", "*" RESET);
+            }
+
             huffman_destroy_tree(huffman_tree);
         }
         else
