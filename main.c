@@ -47,7 +47,7 @@ int main(int argc, char const *argv[])
     if (freq_m != NULL)
     {
         print_asterisks(); // Print a line of asterisks
-        printf(RED "*%30sMAPA DE FRECUENCIAS%34s", "", "*" RESET);
+        printf(RED "*%34sFREQUENCY MAP%36s", "", "*" RESET);
         print_asterisks(); // Print a line of asterisks
         printf("\n");
 
@@ -56,7 +56,7 @@ int main(int argc, char const *argv[])
         // Crear una cola de prioridad con el mapa de frecuencias
         PriorityQueue *pq = create_priority_queue_from_map(freq_m);
         print_asterisks(); // Print a line of asterisks
-        printf(RED "*%22sFRECUENCIAS EN ORDEN ASCENDENTE%26s", "", "*");
+        printf(RED "*%26sORDERIN FREQUENCIES IN ASC%27s", "", "*");
         print_asterisks(); // Print a line of asterisks
         printf("\n");
         print_priority_queue(pq);
@@ -81,16 +81,30 @@ int main(int argc, char const *argv[])
             print_freq_map_binary(dict);
 
             // Codificar el archivo usando el mapa de códigos
+            print_asterisks();
+            printf(RED "*%36sENCODE%37s", "", "*");
+            print_asterisks();
             char *encoded_text = encode_file_with_huffman(dict, "test.txt");
             if (encoded_text != NULL)
             {
-                printf("\nTexto codificado del archivo:\n%s\n", encoded_text);
+                printf("\nCoded Text From File:\n%s\n", encoded_text);
                 free(encoded_text); // Liberar memoria del texto codificado
             }
             else
+                printf("Error: Could not encode file\n");
+
+            print_asterisks();
+            printf(RED "*%36sDECODE%37s", "", "*");
+            print_asterisks();
+            // Decode the encoded text
+            char *decoded_text = decode_text_with_huffman(dict, encoded_text);
+            if(decoded_text != NULL)
             {
-                printf(RED "*%29sEncode%35s", "", "*" RESET);
+                printf("\nDecoded Text:\n%s\n", decoded_text);
+                free(decoded_text); // Liberar memoria del texto decodificado
             }
+            else
+                printf("Error: Could not decode file\n");
 
             huffman_destroy_tree(huffman_tree);
         }
