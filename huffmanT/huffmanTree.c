@@ -222,3 +222,38 @@ map* create_code_map(HuffmanTree *tree)
     create_map_recursive(tree->root, code, 0, code_map);
     return code_map;
 }
+
+void map_destroy(map *m)
+{
+    if (m == NULL)
+        return;
+
+    for (int i = 0; i < BUCKET_SIZE; i++)
+    {
+        node *n = m->hashTable[i];
+        while (n != NULL)
+        {
+            node *next = n->next;
+            free(n);
+            n = next;
+        }
+    }
+    free(m);
+}
+
+void destroy_code_map(map *code_map)
+{
+    if (code_map == NULL)
+        return;
+
+    for (int i = 0; i < BUCKET_SIZE; i++)
+    {
+        node *n = code_map->hashTable[i];
+        while (n != NULL)
+        {
+            free(n->key);
+            free(n->value);
+            n = n->next;
+        }
+    }
+}

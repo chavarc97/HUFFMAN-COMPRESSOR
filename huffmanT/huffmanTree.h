@@ -23,6 +23,6 @@ void huffman_print_codes(HuffmanTree *tree);
 void huffman_destroy_tree(HuffmanTree *tree);
 void create_map_recursive(HuffmanNode *node, char *code, int depth, map *code_map);
 map *create_code_map(HuffmanTree *tree);
-
+void destroy_code_map(map *code_map);
 
 #endif

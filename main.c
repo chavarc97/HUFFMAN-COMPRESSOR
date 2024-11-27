@@ -35,12 +35,20 @@ PriorityQueue *create_priority_queue_from_map(map *freq_m);
 void print_priority_queue(PriorityQueue *pq);
 void print_freq_map_binary(map *freq_m);
 void print_asterisks();
+void print_input_txt(char *filename);
 // ****************************************************************************************************
 
 int main(int argc, char const *argv[])
 {
     printf("\n");
     printf(YELLOW Header RESET);
+    print_asterisks();
+    printf("\n Welcome to the Huffman Encoding Program!\n");
+    print_asterisks();
+    printf("\nText To Encode:\n");
+    print_input_txt("test.txt");
+    printf("\n");
+    getchar();
     // Crear un mapa de frecuencias
     map *freq_m = create_freq_map("test.txt");
 
@@ -52,15 +60,16 @@ int main(int argc, char const *argv[])
         printf("\n");
 
         print_freq_map(freq_m);
+        getchar();
 
         // Crear una cola de prioridad con el mapa de frecuencias
         PriorityQueue *pq = create_priority_queue_from_map(freq_m);
         print_asterisks(); // Print a line of asterisks
-        printf(RED "*%26sORDERIN FREQUENCIES IN ASC%27s", "", "*");
+        printf(RED "*%26sORDERED FREQUENCIES IN ASC%27s", "", "*");
         print_asterisks(); // Print a line of asterisks
         printf("\n");
         print_priority_queue(pq);
-
+        getchar();
         // Create Huffman tree from priority queue
         print_asterisks(); // Print a line of asterisks
         printf(RED "*%30sHUFFMAN TREE BUILD%35s", "", "*" RESET);
@@ -72,14 +81,14 @@ int main(int argc, char const *argv[])
         {
             // Construct a dictionary from the Huffman tree codes and print it
             huffman_print_codes(huffman_tree);
-
+            getchar();
             map *dict = create_code_map(huffman_tree);
             print_asterisks(); // Print a line of asterisks
             printf(RED "*%29sCODES TO DICTIONARY%35s", "", "*" RESET);
             print_asterisks(); // Print a line of asterisks
             printf("\n");
             print_freq_map_binary(dict);
-
+            getchar();
             // Codificar el archivo usando el mapa de códigos
             print_asterisks();
             printf(RED "*%36sENCODE%37s", "", "*");
@@ -89,6 +98,7 @@ int main(int argc, char const *argv[])
             {
                 printf("\nCoded Text From File:\n%s\n", encoded_text);
                 free(encoded_text); // Liberar memoria del texto codificado
+                getchar();
             }
             else
                 printf("Error: Could not encode file\n");
@@ -98,15 +108,21 @@ int main(int argc, char const *argv[])
             print_asterisks();
             // Decode the encoded text
             char *decoded_text = decode_text_with_huffman(dict, encoded_text);
-            if(decoded_text != NULL)
+            if (decoded_text != NULL)
             {
                 printf("\nDecoded Text:\n%s\n", decoded_text);
                 free(decoded_text); // Liberar memoria del texto decodificado
+                getchar();
             }
             else
                 printf("Error: Could not decode file\n");
 
             huffman_destroy_tree(huffman_tree);
+            destroy_code_map(dict);
+            free(freq_m);
+            free(pq);
+            /*
+            free(encoded_text); */
         }
         else
         {
@@ -174,7 +190,7 @@ void print_freq_map(map *freq_m)
             }
             else if (c == '\n')
             {
-                printf("  'NEWLINE': %6d\n", freq);
+                printf("  'NEWLINE': %4d\n", freq);
             }
             else
             {
@@ -250,7 +266,7 @@ void print_priority_queue(PriorityQueue *pq)
         }
         else if (c == '\n')
         {
-            printf("  'NEWLINE': %6d\n", freq);
+            printf("  'NEWLINE': %4d\n", freq);
         }
         else
         {
@@ -269,4 +285,21 @@ void print_asterisks()
         printf("*");
     }
     printf("\n" RESET);
+}
+
+void print_input_txt(char *filename)
+{
+    FILE *file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        perror("Error al abrir el archivo");
+        return;
+    }
+
+    int c;
+    while ((c = fgetc(file)) != EOF)
+    {
+        printf("%c", c);
+    }
+    fclose(file);
 }
